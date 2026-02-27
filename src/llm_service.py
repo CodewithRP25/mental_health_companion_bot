@@ -1,19 +1,11 @@
 import os
-from dotenv import load_dotenv
 from google import genai
-from pathlib import Path
-# Load .env from root folder
-env_path = Path(__file__).resolve().parent.parent / ".env"
-load_dotenv(dotenv_path=env_path)
 
-# Get API key
-api_key = os.getenv("GEMINI_API_KEY")
+client = genai(
+    api_key=os.getenv("GENAI_API_KEY"),
+)
 
-# Configure Gemini
-genai.configure(api_key=api_key)
-print("Gemini Key Loaded:", bool(api_key))
-
-MODEL = "gemini-1.5-flash"  # fast & good
+MODEL = "gemini-1.5-flash"  # free & good
 
 
 def generate_llm_reply(message, emotion):
@@ -26,15 +18,16 @@ Detected emotion: {emotion}
 
 Rules:
 - Be warm and human
-- Validate feelings first
+- Validate feelings first3
 - Keep replies short (1–3 sentences)
 - Do not sound like a therapist
 - Do not give heavy advice immediately
 - Ask gentle follow-up sometimes
 """
+    res = client.chat.completions.create(
+        model=MODEL,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.7
+    )
 
-    model = genai.GenerativeModel(MODEL)
-
-    res = model.generate_content(prompt)
-
-    return res.text
+    return res.choices[0].message.content
