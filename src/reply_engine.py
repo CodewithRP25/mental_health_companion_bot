@@ -1,7 +1,7 @@
 import os
 from app.responses import generate_reply
 
-LLM_ENABLED = os.getenv("GEMINI_API_KEY") is not None
+LLM_ENABLED = os.getenv("OPENROUTER_API_KEY") is not None
 
 
 if LLM_ENABLED:
